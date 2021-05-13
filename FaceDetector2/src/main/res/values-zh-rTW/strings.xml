@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">人臉辨識</string>
+    <string name="action_settings">設定</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="label_add_face">新增識別</string>
+    <string name="label_rotate">旋轉鏡頭顯示</string>
+    <string name="label_list">識別表列</string>
+    <string name="label_clear">清除資料</string>
+    
+    <string name="label_preview">攝影機影像</string>
+    <string name="label_unknown">未知</string>
+    
+    <string name="label_enter_name">輸入識別名稱</string>
+    <string name="label_cancel">取消</string>
+    <string name="label_no_face_added">無資料</string>
+    <string name="label_recognitions">識別資料:</string>
+    <string name="label_delete_all">刪除全部</string>
+    <string name="text_clear_data">是否清除所有識別資料?</string>
+</resources>

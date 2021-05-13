@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">FaceDetector2</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="label_add_face">Add Face</string>
+    <string name="label_rotate">Rotate</string>
+    <string name="label_list">List Data</string>
+    <string name="label_clear">Clear Data</string>
+
+    <string name="label_preview">Preview</string>
+    <string name="label_unknown">Unknown</string>
+
+    <string name="label_enter_name">Enter Name</string>
+    <string name="label_cancel">Cancel</string>
+
+    <string name="label_no_face_added">No Faces Added</string>
+    <string name="label_recognitions">recognitions:</string>
+    <string name="label_delete_all">Delete All</string>
+    <string name="text_clear_data">Do you want to delete all Recognitions?</string>
+</resources>
