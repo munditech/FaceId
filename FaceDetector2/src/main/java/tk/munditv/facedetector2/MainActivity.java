@@ -25,9 +25,7 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.text.InputType;
 import android.util.Pair;
-import android.util.Size;
 import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -255,7 +253,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 System.out.println("ANALYSIS");
-
                 //Process acquired image to detect faces
                 Task<List<Face>> result =
                         detector.process(image)
@@ -263,31 +260,20 @@ public class MainActivity extends AppCompatActivity {
                                         new OnSuccessListener<List<Face>>() {
                                             @Override
                                             public void onSuccess(List<Face> faces) {
-
                                                 if(faces.size()!=0) {
                                                     Face face = faces.get(0); //Get first face from detected faces
                                                     System.out.println(face);
-
                                                     //mediaImage to Bitmap
                                                     Bitmap frame_bmp = toBitmap(mediaImage);
-
                                                     int rot = imageProxy.getImageInfo().getRotationDegrees();
-
                                                     //Adjust orientation of Face
                                                     Bitmap frame_bmp1 = rotateBitmap(frame_bmp, rot, flipX, false);
-
-
-
                                                     //Get bounding box of face
                                                     RectF boundingBox = new RectF(face.getBoundingBox());
-
                                                     //Crop out bounding box from whole Bitmap(image)
                                                     Bitmap cropped_face = getCropBitmapByCPU(frame_bmp1, boundingBox);
-
-
                                                     //Scale the acquired Face to 112*112 which is required input for model
                                                     Bitmap scaled = getResizedBitmap(cropped_face, 112, 112);
-
                                                     if(start)
                                                         recognizeImage(scaled); //Send scaled bitmap to create face embeddings.
                                                     System.out.println(boundingBox);
@@ -297,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
                                                         e.printStackTrace();
                                                     }
                                                 }
-
                                             }
                                         })
                                 .addOnFailureListener(
@@ -311,33 +296,24 @@ public class MainActivity extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<List<Face>>() {
                                     @Override
                                     public void onComplete(@NonNull Task<List<Face>> task) {
-
                                         imageProxy.close(); //v.important to acquire next frame for analysis
                                     }
                                 });
-
-
             }
         });
         cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, imageAnalysis, preview);
     }
 
     public void recognizeImage(final Bitmap bitmap) {
-
         // set Face to Preview
         face_preview.setImageBitmap(bitmap);
-
         //Create ByteBuffer to store normalized image
-
         ByteBuffer imgData = ByteBuffer.allocateDirect(1 * inputSize * inputSize * 3 * 4);
-
         imgData.order(ByteOrder.nativeOrder());
 
         intValues = new int[inputSize * inputSize];
-
         //get pixel values from Bitmap to normalize
         bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-
         imgData.rewind();
 
         for (int i = 0; i < inputSize; ++i) {
@@ -358,29 +334,21 @@ public class MainActivity extends AppCompatActivity {
         }
         //imgData is input to our model
         Object[] inputArray = {imgData};
-
         Map<Integer, Object> outputMap = new HashMap<>();
-
-
         embeedings = new float[1][OUTPUT_SIZE]; //output of model will be stored in this variable
-
         outputMap.put(0, embeedings);
 
         tfLite.runForMultipleInputsOutputs(inputArray, outputMap); //Run model
 
-
-
         float distance = Float.MAX_VALUE;
         String id = "0";
         String label = "?";
-
         //Compare new face with saved Faces.
         if (registered.size() > 0) {
 
             final Pair<String, Float> nearest = findNearest(embeedings[0]);//Find closest matching face
 
             if (nearest != null) {
-
                 final String name = nearest.first;
                 label = name;
                 distance = nearest.second;
@@ -389,12 +357,8 @@ public class MainActivity extends AppCompatActivity {
                 else
                     txt_name.setText(R.string.label_unknown);
                 System.out.println("nearest: " + name + " - distance: " + distance);
-
-
             }
         }
-
-
 //            final int numDetectionsOutput = 1;
 //            final ArrayList<SimilarityClassifier.Recognition> recognitions = new ArrayList<>(numDetectionsOutput);
 //            SimilarityClassifier.Recognition rec = new SimilarityClassifier.Recognition(
@@ -411,13 +375,10 @@ public class MainActivity extends AppCompatActivity {
 
     //Compare Faces by distance between face embeddings
     private Pair<String, Float> findNearest(float[] emb) {
-
         Pair<String, Float> ret = null;
         for (Map.Entry<String, SimilarityClassifier.Recognition> entry : registered.entrySet()) {
-
             final String name = entry.getKey();
             final float[] knownEmb = ((float[][]) entry.getValue().getExtra())[0];
-
             float distance = 0;
             for (int i = 0; i < emb.length; i++) {
                 float diff = emb[i] - knownEmb[i];
@@ -434,7 +395,6 @@ public class MainActivity extends AppCompatActivity {
     private void addFace()
     {
         {
-
             start=false;
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             String str_enter_name = getString(R.string.label_enter_name);
@@ -471,7 +431,6 @@ public class MainActivity extends AppCompatActivity {
                     dialog.cancel();
                 }
             });
-
             builder.show();
         }
     }
@@ -510,11 +469,9 @@ public class MainActivity extends AppCompatActivity {
         matrix.postTranslate(-cropRectF.left, -cropRectF.top);
 
         cavas.drawBitmap(source, matrix, paint);
-
         if (source != null && !source.isRecycled()) {
             source.recycle();
         }
-
         return resultBitmap;
     }
 
@@ -527,7 +484,6 @@ public class MainActivity extends AppCompatActivity {
         Matrix matrix = new Matrix();
         // RESIZE THE BIT MAP
         matrix.postScale(scaleWidth, scaleHeight);
-
         // "RECREATE" THE NEW BITMAP
         Bitmap resizedBitmap = Bitmap.createBitmap(
                 bm, 0, 0, width, height, matrix, false);
@@ -609,14 +565,12 @@ public class MainActivity extends AppCompatActivity {
             catch (ReadOnlyBufferException ex) {
                 // unfortunately, we cannot check if vBuffer and uBuffer overlap
             }
-
             // unfortunately, the check failed. We must save U and V pixel by pixel
             vBuffer.put(1, savePixel);
         }
 
         // other optimizations could check if (pixelStride == 1) or (pixelStride == 2),
         // but performance gain would be less significant
-
         for (int row=0; row<height/2; row++) {
             for (int col=0; col<width/2; col++) {
                 int vuPos = col*pixelStride + row*rowStride;
@@ -624,7 +578,6 @@ public class MainActivity extends AppCompatActivity {
                 nv21[pos++] = uBuffer.get(vuPos);
             }
         }
-
         return nv21;
     }
 
@@ -632,17 +585,12 @@ public class MainActivity extends AppCompatActivity {
 
         byte[] nv21=YUV_420_888toNV21(image);
 
-
         YuvImage yuvImage = new YuvImage(nv21, ImageFormat.NV21, image.getWidth(), image.getHeight(), null);
-
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         yuvImage.compressToJpeg(new Rect(0, 0, yuvImage.getWidth(), yuvImage.getHeight()), 75, out);
-
         byte[] imageBytes = out.toByteArray();
         //System.out.println("bytes"+ Arrays.toString(imageBytes));
-
         //System.out.println("FORMAT"+image.getFormat());
-
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
 
@@ -686,9 +634,7 @@ public class MainActivity extends AppCompatActivity {
                 output[0][counter]= ((Double) arrayList.get(counter)).floatValue();
             }
             entry.getValue().setExtra(output);
-
             //System.out.println("Entry output "+entry.getKey()+" "+entry.getValue().getExtra() );
-
         }
 //        System.out.println("OUTPUT"+ Arrays.deepToString(outut));
         Toast.makeText(context, "Recognitions Loaded", Toast.LENGTH_SHORT).show();
@@ -746,9 +692,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
         builder.setItems(names,null);
-
-
-
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
